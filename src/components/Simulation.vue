@@ -5,39 +5,33 @@ import HeatingSystem from '../models/HeatingSystem';
 import Room from '../models/Room';
 import Simulation from '../models/Simulation';
 import House from '../models/House';
-
-
+import RandomLevel from '../models/RandomLevel';
+import FloorPlan from './FloorPlan.vue';
 // Eingabeparameter
-const outsideTemperature = ref(5);
-const slope = ref(1.5);
-const offset = ref(30);
+
 const simulationSpeed = ref(1);
 
-const flowTemperature = ref(60);
 
-// Räume initialisieren
-const rooms = ref([
-  { name: 'Wohnzimmer', setPoint: 22, currentTemperature: 20, heatingPowerPercentage: 0 },
-  { name: 'Schlafzimmer', setPoint: 20, currentTemperature: 18, heatingPowerPercentage: 0 },
-  { name: 'Küche', setPoint: 21, currentTemperature: 19, heatingPowerPercentage: 0 },
-  { name: 'Bad', setPoint: 24, currentTemperature: 22, heatingPowerPercentage: 0 },
-]);
+const level = new RandomLevel();
 
-// Heizsystem-Instanz
-let heatingSystem = new HeatingSystem(slope.value, offset.value);
-flowTemperature.value = heatingSystem.getFlowTemperature(outsideTemperature.value).toFixed(2);
-let house = new House();
-let simulation: Simulation | null = null;
+const roomInfos = ref(level.rooms.map( room => room.getInfo() ));
+const dimensions = ref(level.dimensions);
 
-rooms.value.forEach(room => {
-  const newRoom = new Room(room.name, room.currentTemperature, 5000, 200, room.setPoint);
-  house.addRoom(newRoom);
-  house.addOutsideConnection(room.name, 100, outsideTemperature.value);
-});
+const outsideTemperature = ref(level.outsideTemperature);
+const slope = ref(0.1);
+const offset = ref(30);
 
-house.setNeighbors('Wohnzimmer', 'Schlafzimmer', 50); // Wärmeübertragung zwischen Wohnzimmer und Schlafzimmer
-house.setNeighbors('Wohnzimmer', 'Küche', 40);       // Wärmeübertragung zwischen Wohnzimmer und Küche
-house.setNeighbors('Küche', 'Bad', 30);  
+const roomSetPoints = ref(level.rooms.map(room => room.getInfo().setPoint));
+
+function changeSetPoint(index: number, value: number) {
+  if(value !== roomSetPoints.value[index]){
+    roomSetPoints.value[index] = value;
+  }
+}
+
+const heatingSystem = level.getHeatingSystem();
+const house = level.house;
+const flowTemperature = ref(heatingSystem.getFlowTemperature(outsideTemperature.value).toFixed(2));
 
 // Simulationsstart-Funktion
 const runSimulation = () => {
@@ -46,18 +40,23 @@ const runSimulation = () => {
   heatingSystem.setOffset(offset.value);
 
   // Simulation initialisieren und laufen lassen
-  simulation = new Simulation(heatingSystem, house, outsideTemperature.value);
+  const simulation = new Simulation(heatingSystem, house, outsideTemperature.value);
+  simulation.setOutsideTemperature(outsideTemperature.value);
 
   house.getRooms().forEach((room, index) => {
-    room.setTargetTemperature(rooms.value[index].setPoint);
+    room.setTargetTemperature(roomSetPoints.value[index]);
   });
 
-  simulation.run(simulationSpeed.value, simulationSpeed.value);
+  simulation.run(simulationSpeed.value, 0.1);
 
-  house.getRooms().forEach((room, index) => {
+  roomInfos.value = house.getRooms().map( room => room.getInfo());
+
+  /*house.getRooms().forEach((room, index) => {
     rooms.value[index].heatingPowerPercentage = room.getCurrentHeatingPowerFactor() * 100;
     rooms.value[index].currentTemperature = room.getCurrentTemperature();
-  });
+  });*/
+  //roomInfo.value = house.getRooms().map( room => room.getInfo());
+
 
   flowTemperature.value = heatingSystem.getFlowTemperature(outsideTemperature.value).toFixed(2);
 
@@ -77,46 +76,46 @@ onUnmounted(() => {
   }
 });
 
+
 </script>
 <template>
   <div class="heating-simulation">
-    <h2>Heizungssteuerung Simulation</h2>
-
     <div class="inputs">
       <h3>Eingaben</h3>
+
+      <div class="mb-4">
+        <label for="temperature" class="mb-2">Außentemperatur:</label>
+        <span class="font-bold">{{ outsideTemperature.toFixed(1) }}°C</span>
+        <input id="temperature" type="range" min="-13" max="40" value="0" class="w-full" v-model.number="outsideTemperature" >
+      </div>
+
+
+      <div class="mb-4">
+        <label for="offset" class="mb-2">Niveau (-13 bis 40): </label> <span class="font-bold"> {{ offset }}</span>
+        <input id="offset" type="range" min="-13" max="40" value="0" class="w-full" v-model.number="offset" >
+      </div>
+    
+      <div class="mb-4">
+        <label for="slope" class="mb-2">Neigung (0.2 bis 3.5): </label><span class="font-bold">{{ slope }}</span>
+
+        <input id="slope" type="range" min="0.2" max="3.5" step="0.1" value="1" class="w-full" v-model.number="slope">
+        <div>
+          0.3 bis 0.5: Gut isoliertes Haus mit Fußbodenheizung<br>
+          1.0 bis 1.2: Gut isoliertes Haus mit Radiatoren <br>
+          1.4 bis 1.6: älteres Haus mit Radiatoren<br>
+        </div>
+      </div>
+
       <div>
-        <label>Außentemperatur (°C):</label>
-        <input v-model.number="outsideTemperature" type="number" />
+        <label class="mb-2">Simulationsgeschwindigkeit:</label>
+        <input type="range" min="1" max="10" class="w-full" v-model.number="simulationSpeed" />
       </div>
-      <div>
-        <label>Neigung:</label>
-        <input v-model.number="slope" type="number" />
-      </div>
-      <div>
-        <label>Verschiebung:</label>
-        <input v-model.number="offset" type="number" />
-      </div>
-      <div v-for="(room, index) in rooms" :key="index">
-        <label>{{ room.name }} Soll-Temperatur (°C):</label>
-        <input v-model.number="room.setPoint" type="number" />
-      </div>
-      <div>
-        <label>Simulationsgeschwindigkeit (in Sekunden pro Schritt):</label>
-        <input v-model.number="simulationSpeed" type="number" />
-      </div>
-      <button @click="startSimulation">Simulation Starten</button>
     </div>
 
     <div class="outputs">
-      <h3>Ausgaben</h3>
-
-      <p>Heizungsvorlauftemperatur (°C): {{ flowTemperature }}</p>
-
-      <div v-for="(room, index) in rooms" :key="index">
-        <p>{{ room.name }} Ist-Temperatur (°C): {{ room.currentTemperature.toFixed(2) }}</p>
-        <p>{{ room.name }} Heizleistung (%): {{ room.heatingPowerPercentage.toFixed(2) }}%</p>
-      </div>
+      <p>Heizungsvorlauftemperatur: <span class="font-bold"> {{ flowTemperature }}°C</span></p>
     </div>
+    <FloorPlan :rooms="roomInfos" :dimensions="dimensions" @changeSetPoint="changeSetPoint" />
   </div>
 </template>
 

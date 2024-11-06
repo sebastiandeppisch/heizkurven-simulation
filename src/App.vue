@@ -1,47 +1,31 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script lang="ts" setup>
+import FloorPlan from './components/FloorPlan.vue';
+import Simulation from './components/Simulation.vue';
 </script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="min-h-screen bg-gray-100 flex flex-col">
+    <!-- Header -->
+    <header class="bg-gray-800 text-white p-4 shadow-md">
+      <h1 class="text-3xl font-bold text-center">Heizungssteuerung Simulation</h1>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    <!-- Hauptinhalt -->
+    <main class="flex-1 flex items-center justify-center">
+      <div class="w-full max-w-4xl p-6 bg-white shadow-lg rounded-lg">
+        <Simulation />
+      </div>
+    </main>
 
-  <main>
-    <TheWelcome />
-  </main>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 mt-6">
+      <p class="text-center text-sm">TODO</p>
+    </footer>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+/* Optional: Anpassungen für eine bessere Darstellung */
+body {
+  font-family: 'Arial', sans-serif;
 }
 </style>

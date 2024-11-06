@@ -1,4 +1,13 @@
 import type { ThermalConnection } from './ThermalConnection';
+
+interface RoomInfo {
+  name: string;
+  currentTemperature: number;
+  setPoint: number;
+  heatingPowerFactor: number;
+}
+export type { RoomInfo };
+
 export default class Room {
   private name: string;
   private currentTemperature: number;
@@ -7,6 +16,8 @@ export default class Room {
   private thermalConnections: ThermalConnection[]; // Verbindungen zu Nachbarn und Außenwelt
   private kp: number; // Verstärkungsfaktor des P-Reglers
   private setPoint: number; // Zieltemperatur des Raums
+  private ki: number = 0.1;
+  private i: number = 0;
 
   private heatingPowerFactor: number;
 
@@ -30,16 +41,20 @@ export default class Room {
   public updateTemperature(flowTemperature: number, deltaTime: number): void {
     // Berechne den Heizleistungsanteil basierend auf dem P-Regler
     const error = this.setPoint - this.currentTemperature;
-    const heatingPowerFactor = this.kp * error;
+    const heatingPowerFactor = this.kp * error + this.ki * this.i;
+    this.i += error;
 
     // Begrenze den Faktor, damit er sinnvoll bleibt (0 bis 1)
     let limitedHeatingPowerFactor = Math.max(0, Math.min(1, heatingPowerFactor));
 
     if (error > 2) {
       limitedHeatingPowerFactor = 1;
+      this.i = 0;
     } else if (error < -2) {
       limitedHeatingPowerFactor = 0;
+      this.i = 0;
     }
+
     this.heatingPowerFactor = limitedHeatingPowerFactor;
 
 
@@ -77,5 +92,14 @@ export default class Room {
 
   public getName(): string {
     return this.name;
+  }
+
+  public getInfo(): RoomInfo {
+    return {
+      name: this.name,
+      currentTemperature: this.currentTemperature,
+      setPoint: this.setPoint,
+      heatingPowerFactor: this.heatingPowerFactor
+    };
   }
 }

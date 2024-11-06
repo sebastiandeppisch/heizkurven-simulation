@@ -27,10 +27,6 @@ export default class Simulation {
     for (let i = 0; i < iterations; i++) {
       const flowTemperature = this.heatingSystem.getFlowTemperature(this.outsideTemperature);
       this.house.updateRooms(flowTemperature, deltaTime);
-
-      // Optional: Ausgabe der aktuellen Raumtemperaturen für jeden Schritt
-      console.log(`Zeit: ${(i + 1) * deltaTime}s`);
-      this.house.getRoomTemperatures();
     }
   }
 }
