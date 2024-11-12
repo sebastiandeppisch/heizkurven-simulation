@@ -1,5 +1,5 @@
 <template>
-	<div class="floorplan-container" ref="floorplan">
+	<div class="floorplan-container" ref="floorplan" >
 		<div class="flex">
 			<div v-for="(room, index) in rooms.slice(0, 2)" :key="index" class="border border-black-200">
 				<div :class="['room', room.bgColor, 'p-4', 'items-center', 'justify-center', 'flex']"
@@ -66,19 +66,19 @@
 	</div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCouch, faBed, faUtensils, faBath } from '@fortawesome/free-solid-svg-icons';
 import type { RoomInfo } from '@/models/Room';
-
+import { useOnResize } from '@/composables';
 const floorplan = ref<HTMLElement>(null);
 
 const rooms = ref([]);
 
-onMounted(() => {
+useOnResize(() => {
 	const width = floorplan.value.clientWidth;
 	rooms.value = generateRooms(width, width);
-})
+});
 
 const props = defineProps<{
 	dimensions: number[];
@@ -164,3 +164,8 @@ const getRoomDeviationColor = (room: RoomInfo) => {
 	}
 };
 </script>
+<style scoped>
+.floorplan-container{
+	min-width: 500px;
+}
+</style>

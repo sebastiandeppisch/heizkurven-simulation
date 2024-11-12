@@ -11,7 +11,7 @@ import Simulation from './components/Simulation.vue';
 
     <!-- Hauptinhalt -->
     <main class="flex-1 flex items-center justify-center">
-      <div class="w-full max-w-4xl p-6 bg-white shadow-lg rounded-lg">
+      <div class="w-full max-w-5xl p-6 ">
         <Simulation />
       </div>
     </main>
