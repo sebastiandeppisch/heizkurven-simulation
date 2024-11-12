@@ -1,3 +1,4 @@
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { ThermalConnection } from './ThermalConnection';
 
 interface RoomInfo {
@@ -6,7 +7,18 @@ interface RoomInfo {
   setPoint: number;
   heatingPowerFactor: number;
 }
-export type { RoomInfo };
+
+interface RoomInfoUI extends RoomInfo {
+  icon: IconDefinition;
+  color: string;
+  width: number;
+  height: number;
+}
+
+type RoomType = 'kitchen' | 'bedroom' | 'bathroom' | 'livingroom';
+
+
+export type { RoomInfo, RoomInfoUI, RoomType };
 
 export default class Room {
   private name: string;

@@ -2,8 +2,8 @@ import HeatingSystem from "./HeatingSystem";
 import House from "./House";
 import OutsideTemperatureGenerator from "./OutsideTemperatureGenerator";
 import Room from "./Room";
+import type { RoomType } from "./Room";
 
-type RoomType = 'kitchen' | 'bedroom' | 'bathroom' | 'livingroom';
 
 export default class RandomLevel {
 	public roomOrder: RoomType[]

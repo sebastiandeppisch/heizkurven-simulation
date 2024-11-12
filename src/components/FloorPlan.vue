@@ -2,65 +2,38 @@
 	<div class="floorplan-container" ref="floorplan" >
 		<div class="flex">
 			<div v-for="(room, index) in rooms.slice(0, 2)" :key="index" class="border border-black-200">
-				<div :class="['room', room.bgColor, 'p-4', 'items-center', 'justify-center', 'flex']"
-					:style="{ width: room.width + 'px', height: room.height + 'px', backgroundColor: deviationColors[index] }">
-					<div class="">
-						<!-- Raum-Icon -->
-						<div class="flex items-center justify-center mb-2">
-							<font-awesome-icon :icon="room.icon" class="text-gray-700 text-2xl" />
-						</div>
 
-						<!-- Raumname -->
-						<h3 class="text-lg font-bold text-center mb-2">{{ room.name }}</h3>
-
-						<!-- Soll-Temperatur Input -->
-						<div class="text-center mb-2">
-							<label class="text-sm text-gray-800 block">Soll (°C):</label>
-							<input v-model.number="room.setPoint" type="number" @change="e => changeSetPoint(index, e.target.value)"
-								class="w-16 text-center rounded-md border border-gray-300" />
-						</div>
-
-						<!-- Ist-Temperatur Anzeige -->
-						<div class="text-center">
-							<p class="text-sm">Ist: {{ currentTemperature[index].toFixed(1) }}°C</p>
-						</div>
-						<div class="text-center">
-							<p class="text-sm">Leistung: {{ heatingPowerFactor[index] }}%</p>
-						</div>
-					</div>
-				</div>
+				<Room :room="{
+					name: room.name,
+					icon: room.icon,
+					width: room.width,
+					height: room.height,
+					currentTemperature: currentTemperature[index],
+					setPoint: room.setPoint,
+					color: deviationColors[index],
+					heatingPowerFactor: heatingPowerFactor[index]
+				}"
+					v-model="room.setPoint"
+					@change="(e: any) => changeSetPoint(index, e.target.value)"
+				/>
 			</div>
 		</div>
 		<div class="flex">
 			<div v-for="(room, index) in rooms.slice(2, 4)" :key="index" class="border border-black-200">
-				<div :class="['room', room.bgColor, 'p-4', 'items-center', 'justify-center', 'flex']"
-					:style="{ width: room.width + 'px', height: room.height + 'px', backgroundColor: deviationColors[index +2] }">
-					<div class="">
-						<!-- Raum-Icon -->
-						<div class="flex items-center justify-center mb-2">
-							<font-awesome-icon :icon="room.icon" class="text-gray-700 text-2xl" />
-						</div>
 
-						<!-- Raumname -->
-						<h3 class="text-lg font-bold text-center mb-2">{{ room.name }}</h3>
-
-						<!-- Soll-Temperatur Input -->
-						<div class="text-center mb-2">
-							<label class="text-sm text-gray-800 block">Soll (°C):</label>
-							<input v-model.number="room.setPoint" type="number" @change="e => changeSetPoint(index+2, e.target.value)"
-								class="w-16 text-center rounded-md border border-gray-300" />
-						</div>
-
-						<!-- Ist-Temperatur Anzeige -->
-						<div class="text-center">
-							<p class="text-sm">Ist: {{ currentTemperature[index+2].toFixed(1) }}°C</p>
-						</div>
-
-						<div class="text-center">
-							<p class="text-sm">Leistung: {{ heatingPowerFactor[index+2] }}%</p>
-						</div>
-					</div>
-				</div>
+				<Room :room="{
+					name: room.name,
+					icon: room.icon,
+					width: room.width,
+					height: room.height,
+					currentTemperature: currentTemperature[index+2],
+					setPoint: room.setPoint,
+					color: deviationColors[index+2],
+					heatingPowerFactor: heatingPowerFactor[index+2]
+				}"
+					v-model="room.setPoint"
+					@change="(e: any) => changeSetPoint(index+2, e.target.value)"
+				/>
 			</div>
 		</div>
 	</div>
@@ -68,14 +41,16 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCouch, faBed, faUtensils, faBath } from '@fortawesome/free-solid-svg-icons';
-import type { RoomInfo } from '@/models/Room';
+import { faCouch, faBed, faUtensils, faBath, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import type { RoomInfo, RoomInfoUI, RoomType } from '@/models/Room';
 import { useOnResize } from '@/composables';
-const floorplan = ref<HTMLElement>(null);
+import Room from './Room.vue';
+const floorplan = ref<HTMLElement | null>(null);
 
-const rooms = ref([]);
+const rooms = ref<RoomInfoUI[]>([]);
 
 useOnResize(() => {
+	if(!floorplan.value) return;
 	const width = floorplan.value.clientWidth;
 	rooms.value = generateRooms(width, width);
 });
@@ -86,7 +61,7 @@ const props = defineProps<{
 }>();
 
 
-const roomLabels: Array<RoomType, { name: string, icon: string }> = {
+const roomLabels: Record<RoomType, { name: string, icon: IconDefinition }> = {
 	'livingroom': { name: 'Wohnzimmer', icon: faCouch },
 	'bedroom': { name: 'Schlafzimmer', icon: faBed },
 	'kitchen': { name: 'Küche', icon: faUtensils },
@@ -104,11 +79,10 @@ const currentTemperature = computed( () => props.rooms.map(room => room.currentT
 
 const deviationColors = computed( () => props.rooms.map(room => getRoomDeviationColor(room)));
 
-const heatingPowerFactor = computed( () => props.rooms.map(room => (room.heatingPowerFactor * 100).toFixed(0) ));
+const heatingPowerFactor = computed( () => props.rooms.map(room => (room.heatingPowerFactor * 100) ));
 
-// Funktion zur Generierung eines zufälligen Grundrisses mit vier unterschiedlich großen Räumen, versetzt angeordnet
-function generateRooms (width: number, height: number){
-	const rooms = [];
+function generateRooms (width: number, height: number): RoomInfoUI[] {
+	const rooms = [] as RoomInfoUI[];
 
 	const widths = [
 		props.dimensions[0] * width,
@@ -126,14 +100,17 @@ function generateRooms (width: number, height: number){
 
 	for(let i = 0; i < 4; i++){
 		const room = props.rooms[i];
+
+		const name = room.name as RoomType;
+
 		rooms.push({
-			name: roomLabels[room.name].name,
-			icon: roomLabels[room.name].icon,
+			name: roomLabels[name].name,
+			icon: roomLabels[name].icon,
 			width: widths[i],
 			height: heights[i],
 			currentTemperature: room.currentTemperature,
 			setPoint: room.setPoint,
-			deviationColor: getRoomDeviationColor(room),
+			color: getRoomDeviationColor(room),
 			heatingPowerFactor: (room.heatingPowerFactor * 100)
 		});
 	}
