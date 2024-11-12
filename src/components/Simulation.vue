@@ -7,7 +7,6 @@ import House from '../models/House';
 import RandomLevel from '../models/RandomLevel';
 import FloorPlan from './FloorPlan.vue';
 import Curves from './Curves.vue';
-// Eingabeparameter
 
 const simulationSpeed = ref(1);
 
@@ -95,13 +94,13 @@ const curves = computed(() => {
     <div class="card">
       <h2>Einstellung der Heizkurve</h2>
       <div class="flex gap-1">
-        <div class="w-1/3">
-          <div class="mb-4">
+        <div class="w-1/3 gap-5 flex flex-col">
+          <div>
             <label for="offset" class="mb-2">Niveau (-13 bis 40): </label> <span class="font-bold"> {{ offset }}</span>
             <input id="offset" type="range" min="-13" max="40" value="0" class="w-full" v-model.number="offset">
           </div>
 
-          <div class="mb-4">
+          <div>
             <label for="slope" class="mb-2">Neigung (0.2 bis 3.5): </label><span class="font-bold">{{ slope }}</span>
 
             <input id="slope" type="range" min="0.2" max="3.5" step="0.1" value="1" class="w-full"
@@ -131,7 +130,6 @@ const curves = computed(() => {
             <input id="temperature" type="range" min="-13" max="40" value="0" class="w-full"
               v-model.number="outsideTemperature">
             <p>Heizungsvorlauftemperatur: <span class="font-bold"> {{ flowTemperature }}°C</span></p>
-
           </div>
           <div class="grow flex flex-col justify-end">
               <label class="mb-2">Simulationsgeschwindigkeit:</label>
