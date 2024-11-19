@@ -1,24 +1,20 @@
 <script lang="ts" setup>
-import FloorPlan from './components/FloorPlan.vue';
 import Simulation from './components/Simulation.vue';
 </script>
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col">
-    <!-- Header -->
     <header class="bg-gray-800 text-white p-4 shadow-md">
       <h1 class="text-3xl font-bold text-center">Heizungssteuerung Simulation</h1>
     </header>
 
-    <!-- Hauptinhalt -->
     <main class="flex-1 flex items-center justify-center">
       <div class="w-full max-w-5xl p-6 ">
         <Simulation />
       </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white p-4 mt-6">
-      <p class="text-center text-sm">TODO</p>
+      <p class="text-center text-sm">© Sebastian Deppisch 2024 &ndash; <a href="https://sebastiandeppisch.de/impressum">Impressum</a> &ndash; <a href="https://Sebastiandeppisch.de/datenschutz">Datenschutzerklärung</a> </p>
     </footer>
   </div>
 </template>
