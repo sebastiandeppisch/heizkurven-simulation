@@ -1,5 +1,5 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import type { ThermalConnection } from './ThermalConnection';
+import type { ThermalConnection, ThermalEntity } from './ThermalConnection';
 
 interface RoomInfo {
   name: string;
@@ -20,7 +20,7 @@ type RoomType = 'kitchen' | 'bedroom' | 'bathroom' | 'livingroom';
 
 export type { RoomInfo, RoomInfoUI, RoomType };
 
-export default class Room {
+export default class Room implements ThermalEntity {
   private name: string;
   private currentTemperature: number;
   private heatCapacity: number; // Wärmekapazität des Raums
@@ -44,19 +44,30 @@ export default class Room {
     this.heatingPowerFactor = 0;
   }
 
-  // Methode zum Hinzufügen von Verbindungen
   public addThermalConnection(connection: ThermalConnection): void {
     this.thermalConnections.push(connection);
   }
 
-  // Methode zur Aktualisierung der Raumtemperatur
   public updateTemperature(flowTemperature: number, deltaTime: number): void {
-    // Berechne den Heizleistungsanteil basierend auf dem P-Regler
+
+    this.addEnergy(250 * deltaTime); //Person in the room
+
+    this.addEnergy(this.calculateHeatingPower(flowTemperature) * deltaTime);
+
+    this.thermalConnections.forEach(connection => {
+      connection.transferEnergy(this, deltaTime);
+    });
+
+    if (this.currentTemperature > this.setPoint) {
+      this.addEnergy(-250 * deltaTime); //persons open the window
+    }
+  }
+
+  private calculateHeatingPower(flowTemperature: number): number {
     const error = this.setPoint - this.currentTemperature;
     const heatingPowerFactor = this.kp * error + this.ki * this.i;
     this.i += error;
 
-    // Begrenze den Faktor, damit er sinnvoll bleibt (0 bis 1)
     let limitedHeatingPowerFactor = Math.max(0, Math.min(1, heatingPowerFactor));
 
     if (error > 2) {
@@ -69,34 +80,25 @@ export default class Room {
 
     this.heatingPowerFactor = limitedHeatingPowerFactor;
 
-
-    // Berechne die Wärmezufuhr durch den Heizkörper
-    const heatingPower = this.heatTransferCoefficient * limitedHeatingPowerFactor * (flowTemperature - this.currentTemperature);
-
-
-    // Berechne Wärmeaustausch über alle Verbindungen (Nachbarn + Außenwelt)
-    let totalHeatTransfer = 0;
-    this.thermalConnections.forEach(connection => {
-      const temperatureDifference = connection.getTemperature() - this.currentTemperature;
-      totalHeatTransfer += connection.getTransferCoefficient() * temperatureDifference;
-    });
-
-    // Berechne die Änderung der Raumtemperatur
-    const deltaTemperature = (heatingPower + totalHeatTransfer) / this.heatCapacity * deltaTime;
-
-    // Update der Raumtemperatur
-    this.currentTemperature += deltaTemperature;
+    return this.heatTransferCoefficient * limitedHeatingPowerFactor * (flowTemperature - this.currentTemperature);
   }
 
-  public getCurrentTemperature(): number {
+  public getTemperature(): number {
     return this.currentTemperature;
+  }
+
+  public getSetPoint(): number {
+    return this.setPoint;
+  }
+
+  public addEnergy(energy: number): void {
+    const deltaTemperature = energy / this.heatCapacity;
+    this.currentTemperature += deltaTemperature;
   }
 
   public getCurrentHeatingPowerFactor(): number {
     return this.heatingPowerFactor;
   }
-
-
 
   public setTargetTemperature(targetTemperature: number): void {
     this.setPoint = targetTemperature;

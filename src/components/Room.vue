@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-
-import { defineProps, defineModel } from 'vue';
-
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import type { RoomInfoUI } from '@/models/Room';
@@ -40,7 +37,7 @@ const model = defineModel();
 						<p class="text-sm">Ist: {{ room.currentTemperature.toFixed(1) }}°C</p>
 					</div>
 					<div class="text-center">
-						<p class="text-sm">Leistung: {{ room.heatingPowerFactor.toFixed(0) }}%</p>
+						<p class="text-sm">Ventilstellung: {{ room.heatingPowerFactor.toFixed(0) }}%</p>
 					</div>
 				</div>
 				<div>

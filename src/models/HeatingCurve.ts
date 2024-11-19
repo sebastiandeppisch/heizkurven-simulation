@@ -8,7 +8,7 @@ export default class HeatingCurve {
 
 	public get(outsideTemperature: number): number {
 
-		const rt_soll = 21;
+		const rt_soll = 23;
 
 		const dar = outsideTemperature - rt_soll;
 		return this.calculateValue(dar, rt_soll, this.offset, this.slope);

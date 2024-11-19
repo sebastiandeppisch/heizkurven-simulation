@@ -13,18 +13,25 @@ const simulationSpeed = ref(1);
 
 const level = new RandomLevel();
 
+
 const roomInfos = ref(level.rooms.map(room => room.getInfo()));
 const dimensions = ref(level.dimensions);
 
 const outsideTemperature = ref(level.outsideTemperature);
 
-const orgSlope = 1.5;
-const orgOffset = 0;
+const orgSlope = level.heatingSystem.getSlope();
+const orgOffset = level.heatingSystem.getOffset();
 
 const slope = ref(orgSlope);
 const offset = ref(orgOffset);
 
 const roomSetPoints = ref(level.rooms.map(room => room.getInfo().setPoint));
+
+
+const maxOutsideTemperature = computed(() => {
+  return Math.ceil(Math.max(...roomSetPoints.value));
+});
+
 
 function changeSetPoint(index: number, value: number) {
   if (value !== roomSetPoints.value[index]) {
@@ -32,7 +39,7 @@ function changeSetPoint(index: number, value: number) {
   }
 }
 
-const heatingSystem = level.getHeatingSystem();
+const heatingSystem = level.heatingSystem;
 const house = level.house;
 const flowTemperature = ref(heatingSystem.getFlowTemperature(outsideTemperature.value).toFixed(2));
 
@@ -43,14 +50,14 @@ const runSimulation = () => {
   heatingSystem.setOffset(offset.value);
 
   // Simulation initialisieren und laufen lassen
-  const simulation = new Simulation(heatingSystem, house, outsideTemperature.value);
+  const simulation = new Simulation(heatingSystem, house, level.outside);
   simulation.setOutsideTemperature(outsideTemperature.value);
 
   house.getRooms().forEach((room, index) => {
     room.setTargetTemperature(roomSetPoints.value[index]);
   });
 
-  simulation.run(simulationSpeed.value, 0.1);
+  simulation.run(simulationSpeed.value, 0.01); //TODO fine tuning
 
   roomInfos.value = house.getRooms().map(room => room.getInfo());
 
@@ -65,7 +72,7 @@ const runSimulation = () => {
 
 };
 
-const interval = ref<number | null>(null);
+const interval = ref(null);
 
 onMounted(() => {
   interval.value = setInterval(() => {
@@ -127,7 +134,7 @@ const curves = computed(() => {
           <div>
             <label for="temperature" class="mb-2">Außentemperatur:</label>
             <span class="font-bold">{{ outsideTemperature.toFixed(1) }}°C</span>
-            <input id="temperature" type="range" min="-13" max="40" value="0" class="w-full"
+            <input id="temperature" type="range" min="-13" :max="maxOutsideTemperature" value="0" class="w-full"
               v-model.number="outsideTemperature">
             <p>Heizungsvorlauftemperatur: <span class="font-bold"> {{ flowTemperature }}°C</span></p>
           </div>

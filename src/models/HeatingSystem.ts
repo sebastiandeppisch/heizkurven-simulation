@@ -1,13 +1,22 @@
+import { Outside } from './ThermalConnection';
 export default class HeatingSystem {
   private slope: number;  // Steigung m
   private offset: number; // Parallelverschiebung c
+
+  public outside: Outside | null = null;
 
   constructor(slope: number, offset: number) {
     this.slope = slope;
     this.offset = offset;
   }
 
-  public getFlowTemperature(outsideTemperature: number): number {
+  public getFlowTemperature(outsideTemperature: number | null = null): number {
+    if (outsideTemperature === null) {
+      if (this.outside === null) {
+        throw new Error('No outside temperature given');
+      }
+      outsideTemperature = this.outside.getTemperature();
+    }
 
     const roomDesiredTemperature = 20;
 
@@ -18,6 +27,8 @@ export default class HeatingSystem {
 
     flowTemperature = Math.max(outsideTemperature, Math.min(100, flowTemperature));
 
+    flowTemperature = Math.max(20, flowTemperature);
+
     return flowTemperature;
   }
 
@@ -27,5 +38,13 @@ export default class HeatingSystem {
 
   public setOffset(offset: number): void {
     this.offset = offset;
+  }
+
+  public getSlope(): number {
+    return this.slope;
+  }
+
+  public getOffset(): number {
+    return this.offset;
   }
 }

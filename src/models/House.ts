@@ -1,12 +1,11 @@
+import { Outside, ThermalConnection } from './ThermalConnection';
 import Room from './Room';
-import { OutsideConnection, NeighborRoomConnection } from './ThermalConnection';
 export default class House {
   private rooms: Array<Room>;
-  private outsideConnections: OutsideConnection[];
+
 
   constructor() {
     this.rooms = [];
-    this.outsideConnections = [];
   }
 
   public addRoom(room: Room): void {
@@ -17,12 +16,10 @@ export default class House {
     return this.rooms;
   }
 
-  public addOutsideConnection(roomName: string, insulationCoefficient: number, initialOutsideTemperature: number): void {
+  public addOutsideConnection(roomName: string, insulationCoefficient: number, outside: Outside): void {
     const room = this.rooms.find(room => room.getName() === roomName);
     if (room) {
-      const outsideConnection = new OutsideConnection(initialOutsideTemperature, insulationCoefficient);
-      room.addThermalConnection(outsideConnection);
-      this.outsideConnections.push(outsideConnection);
+      room.addThermalConnection(new ThermalConnection(outside, insulationCoefficient));
     } else {
       throw new Error(`Room not found: ${roomName}`);
     }
@@ -33,15 +30,10 @@ export default class House {
     const room2 = this.rooms.find(room => room.getName() === roomName2);
 
     if (room1 && room2) {
-      room1.addThermalConnection(new NeighborRoomConnection(room2, wallTransferCoefficient));
-      room2.addThermalConnection(new NeighborRoomConnection(room1, wallTransferCoefficient));
+      room1.addThermalConnection(new ThermalConnection(room2, wallTransferCoefficient));
     } else {
       throw new Error(`One or both rooms not found: ${roomName1}, ${roomName2}`);
     }
-  }
-
-  public setOutsideTemperature(temperature: number): void {
-    this.outsideConnections.forEach(connection => connection.setOutsideTemperature(temperature));
   }
 
   public updateRooms(flowTemperature: number, deltaTime: number): void {
@@ -50,7 +42,7 @@ export default class House {
 
   public getRoomTemperatures(): number[] {
     return this.rooms.map(room => {
-      return room.getCurrentTemperature();
+      return room.getTemperature();
     });
   }
 }

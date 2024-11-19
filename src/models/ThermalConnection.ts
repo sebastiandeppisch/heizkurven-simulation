@@ -1,44 +1,41 @@
-import Room from "./Room";
-export class NeighborRoomConnection implements ThermalConnection {
-  private neighborRoom: Room;
-  private wallTransferCoefficient: number;
-
-  constructor(neighborRoom: Room, wallTransferCoefficient: number) {
-    this.neighborRoom = neighborRoom;
-    this.wallTransferCoefficient = wallTransferCoefficient;
-  }
-
-  public getTemperature(): number {
-    return this.neighborRoom.getCurrentTemperature();
+export class ThermalConnection {
+  constructor(private other: ThermalEntity, private transferCoefficient: number) {
   }
 
   public getTransferCoefficient(): number {
-    return this.wallTransferCoefficient;
+    return this.transferCoefficient;
+  }
+
+  public transferEnergy(main: ThermalEntity, deltaTime: number): void {
+    const temperatureDifference = main.getTemperature() - this.other.getTemperature();
+    const energy = this.transferCoefficient * temperatureDifference * deltaTime;
+    this.other.addEnergy(energy);
+    main.addEnergy(-energy);
   }
 }
 
-export class OutsideConnection implements ThermalConnection {
-  private outsideTemperature: number;
-  private insulationCoefficient: number;
-
-  constructor(outsideTemperature: number, insulationCoefficient: number) {
-    this.outsideTemperature = outsideTemperature;
-    this.insulationCoefficient = insulationCoefficient;
-  }
-
-  public setOutsideTemperature(temperature: number): void {
-    this.outsideTemperature = temperature;
-  }
-
-  public getTemperature(): number {
-    return this.outsideTemperature;
-  }
-
-  public getTransferCoefficient(): number {
-    return this.insulationCoefficient;
-  }
-}
-export interface ThermalConnection {
+export interface ThermalEntity {
   getTemperature(): number;
-  getTransferCoefficient(): number;
+  addEnergy(amount: number): void;
+}
+
+
+export class Outside implements ThermalEntity {
+  private temperature: number;
+
+  constructor(temperature: number) {
+    this.temperature = temperature;
+  }
+
+  getTemperature(): number {
+    return this.temperature;
+  }
+
+  setTemperature(temperature: number): void {
+    this.temperature = temperature;
+  }
+
+  addEnergy(amount: number): void {
+    //infinitely large heat capacity
+  }
 }

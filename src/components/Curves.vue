@@ -56,8 +56,6 @@ const plotCurves = () => {
 
 		const lastCurve = props.curves[props.curves.length - 1];
 
-		console.log(lastCurve);
-
 		const flowTemp = heatingCurve(lastCurve.offset, lastCurve.slope)(props.currentTemperature);
 		const currentTemp = props.currentTemperature;
 
@@ -73,12 +71,6 @@ const plotCurves = () => {
 				animation: false
 			})
 		}
-		
-
-
-		const categories = series[0].data.map(d => d[0]);
-
-		console.log(categories);
 
 
 		Highcharts.chart(chartContainer.value, {

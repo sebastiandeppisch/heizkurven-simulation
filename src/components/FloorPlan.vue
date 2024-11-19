@@ -45,6 +45,7 @@ import { faCouch, faBed, faUtensils, faBath, type IconDefinition } from '@fortaw
 import type { RoomInfo, RoomInfoUI, RoomType } from '@/models/Room';
 import { useOnResize } from '@/composables';
 import Room from './Room.vue';
+import RoomDimensions from '@/models/RoomDimensions';
 const floorplan = ref<HTMLElement | null>(null);
 
 const rooms = ref<RoomInfoUI[]>([]);
@@ -84,19 +85,7 @@ const heatingPowerFactor = computed( () => props.rooms.map(room => (room.heating
 function generateRooms (width: number, height: number): RoomInfoUI[] {
 	const rooms = [] as RoomInfoUI[];
 
-	const widths = [
-		props.dimensions[0] * width,
-		width - props.dimensions[0] * width,
-		props.dimensions[2] * width,
-		width - props.dimensions[2] * width,
-	];
-
-	const heights = [
-		props.dimensions[2] * width,
-		props.dimensions[2] * width,
-		height - props.dimensions[2] * width,
-		height - props.dimensions[2] * width,
-	];
+	const dims = new RoomDimensions(width, height, props.dimensions);
 
 	for(let i = 0; i < 4; i++){
 		const room = props.rooms[i];
@@ -106,8 +95,8 @@ function generateRooms (width: number, height: number): RoomInfoUI[] {
 		rooms.push({
 			name: roomLabels[name].name,
 			icon: roomLabels[name].icon,
-			width: widths[i],
-			height: heights[i],
+			width: dims.getWidth(i),
+			height: dims.getHeight(i),
 			currentTemperature: room.currentTemperature,
 			setPoint: room.setPoint,
 			color: getRoomDeviationColor(room),
