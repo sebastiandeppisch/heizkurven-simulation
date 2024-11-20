@@ -1,35 +1,31 @@
+import HeatingCurve from './HeatingCurve';
 import { Outside } from './ThermalConnection';
 export default class HeatingSystem {
-  private slope: number;  // Steigung m
-  private offset: number; // Parallelverschiebung c
+  private slope: number;
+  private offset: number;
 
-  public outside: Outside | null = null;
+  public outside: Outside;
 
-  constructor(slope: number, offset: number) {
+  constructor(slope: number, offset: number, outside: Outside) {
     this.slope = slope;
     this.offset = offset;
+    this.outside = outside;
   }
 
   public getFlowTemperature(outsideTemperature: number | null = null): number {
     if (outsideTemperature === null) {
-      if (this.outside === null) {
-        throw new Error('No outside temperature given');
-      }
       outsideTemperature = this.outside.getTemperature();
     }
 
-    const roomDesiredTemperature = 20;
-
-    const error = roomDesiredTemperature - outsideTemperature;
-
-
-    let flowTemperature = this.slope * error + this.offset;
+    let flowTemperature = this.heatingCurve.get(outsideTemperature);
 
     flowTemperature = Math.max(outsideTemperature, Math.min(100, flowTemperature));
 
-    flowTemperature = Math.max(20, flowTemperature);
-
     return flowTemperature;
+  }
+
+  private get heatingCurve(): HeatingCurve {
+    return new HeatingCurve(this.offset, this.slope);
   }
 
   public setSlope(slope: number): void {

@@ -57,7 +57,8 @@ describe('Room', () => {
 
 describe('Simulation', () => {
   it('should run and update room temperatures accordingly', () => {
-    const heatingSystem = new HeatingSystem(1.5, 30);
+    const outside = new Outside(5);
+    const heatingSystem = new HeatingSystem(1.5, 30, outside);
     const house = new House();
 
     // Räume initialisieren
@@ -72,7 +73,7 @@ describe('Simulation', () => {
     house.addRoom(bathroom);
 
     // Simulation initialisieren
-    const simulation = new Simulation(heatingSystem, house, new Outside(5));
+    const simulation = new Simulation(heatingSystem, house, outside);
 
     // Außentemperatur setzen
     simulation.setOutsideTemperature(-5);
