@@ -7,6 +7,8 @@ import House from '../models/House';
 import RandomLevel from '../models/RandomLevel';
 import FloorPlan from './FloorPlan.vue';
 import Curves from './Curves.vue';
+import Slider from './Slider.vue';
+import TemperatureSlider from './TemperatureSlider.vue';
 
 const simulationSpeed = ref(1);
 
@@ -72,7 +74,7 @@ const runSimulation = () => {
 
 };
 
-const interval = ref(null);
+const interval = ref<any|null>(null);
 
 onMounted(() => {
   interval.value = setInterval(() => {
@@ -103,15 +105,16 @@ const curves = computed(() => {
       <div class="flex gap-1">
         <div class="w-1/3 gap-5 flex flex-col">
           <div>
-            <label for="offset" class="mb-2">Niveau (-13 bis 40): </label> <span class="font-bold"> {{ offset }}</span>
-            <input id="offset" type="range" min="-13" max="40" value="0" class="w-full" v-model.number="offset">
+            <label for="offset" class="mb-2">Niveau (-13 bis 40): </label> <span class="font-bold"> {{ offset.toFixed(0) }}</span>
+            <Slider v-model="offset" :min="-13" :max="40" />
+
+          
           </div>
 
           <div>
-            <label for="slope" class="mb-2">Neigung (0.2 bis 3.5): </label><span class="font-bold">{{ slope }}</span>
+            <label for="slope" class="mb-2">Neigung (0.2 bis 3.5): </label><span class="font-bold">{{ slope.toFixed(1) }}</span>
 
-            <input id="slope" type="range" min="0.2" max="3.5" step="0.1" value="1" class="w-full"
-              v-model.number="slope">
+            <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
             <div>
               0.3 bis 0.5: Gut isoliertes Haus mit Fußbodenheizung<br>
               1.0 bis 1.2: Gut isoliertes Haus mit Radiatoren <br>
@@ -134,13 +137,13 @@ const curves = computed(() => {
           <div>
             <label for="temperature" class="mb-2">Außentemperatur:</label>
             <span class="font-bold">{{ outsideTemperature.toFixed(1) }}°C</span>
-            <input id="temperature" type="range" min="-13" :max="maxOutsideTemperature" value="0" class="w-full"
-              v-model.number="outsideTemperature">
+
+            <TemperatureSlider v-model="outsideTemperature" :min="-13" :max="25" :optimal="20" />
             <p>Heizungsvorlauftemperatur: <span class="font-bold"> {{ flowTemperature }}°C</span></p>
           </div>
           <div class="grow flex flex-col justify-end">
               <label class="mb-2">Simulationsgeschwindigkeit:</label>
-              <input type="range" min="1" max="10" class="w-full" v-model.number="simulationSpeed" />
+              <Slider v-model="simulationSpeed" :min="1" :max="10" />
           </div>
         </div>
 
