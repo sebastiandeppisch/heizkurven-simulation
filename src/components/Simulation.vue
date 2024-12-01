@@ -9,7 +9,10 @@ import FloorPlan from './FloorPlan.vue';
 import Curves from './Curves.vue';
 import Slider from './Slider.vue';
 import TemperatureSlider from './TemperatureSlider.vue';
-
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import offsetImage from '@/assets/offset.svg';
+import slopeImage from '@/assets/slope.svg';
 const simulationSpeed = ref(1);
 
 
@@ -105,23 +108,37 @@ const curves = computed(() => {
       <div class="flex gap-1">
         <div class="w-1/3 gap-5 flex flex-col">
           <div>
-            <label for="offset" class="mb-2">Niveau (-13 bis 40): </label> <span class="font-bold"> {{ offset.toFixed(0) }}</span>
+            <label for="offset" class="mb-2 font-bold">
+              <img :src="offsetImage" alt="Offset" class="w-6 h-6 mb-1 inline" />
+              Niveau: </label> <span > {{ offset.toFixed(0) }}</span>
             <Slider v-model="offset" :min="-13" :max="40" />
 
           
           </div>
 
           <div>
-            <label for="slope" class="mb-2">Neigung (0.2 bis 3.5): </label><span class="font-bold">{{ slope.toFixed(1) }}</span>
+            <label for="slope" class="mb-2 font-bold">
+              <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
+              Neigung: </label><span class="">{{ slope.toFixed(1) }}</span>
 
             <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
-            <div>
-              0.3 bis 0.5: Gut isoliertes Haus mit Fußbodenheizung<br>
-              1.0 bis 1.2: Gut isoliertes Haus mit Radiatoren <br>
-              1.4 bis 1.6: älteres Haus mit Radiatoren<br>
-            </div>
+            
 
           </div>
+
+          <div>
+                <div class="font-bold">
+                  <font-awesome-icon :icon="faArrowDown" />
+                  Niedrige Neigung:
+                </div>
+                Fußbodenheizung, gut gedämmte Häuser
+                <div class="font-bold">
+                  <font-awesome-icon :icon="faArrowUp" />
+                  Hohe Neigung:
+                </div>
+                Radiatoren, schlecht gedämmte Häuser
+              <div class="text-gray-700">  (Tendenz, kann abweichen)</div>
+            </div>
 
         </div>
         <div class="w-2/3">
