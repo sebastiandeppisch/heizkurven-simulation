@@ -10,9 +10,10 @@ import Curves from './Curves.vue';
 import Slider from './Slider.vue';
 import TemperatureSlider from './TemperatureSlider.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faThermometer, faThermometer0, faThermometer1, faThermometer2 } from '@fortawesome/free-solid-svg-icons';
 import offsetImage from '@/assets/offset.svg';
 import slopeImage from '@/assets/slope.svg';
+import heater from '@/assets/heater.svg';
 const simulationSpeed = ref(1);
 
 
@@ -151,12 +152,21 @@ const curves = computed(() => {
       <h2>Gebäudesimulation</h2>
       <div class="flex gap-3">
         <div class="w-1/3 flex flex-col">
-          <div>
-            <label for="temperature" class="mb-2">Außentemperatur:</label>
-            <span class="font-bold">{{ outsideTemperature.toFixed(1) }}°C</span>
+          <div class="flex gap-5 flex-col">
+            <div>
+              <label for="temperature" class="mb-2 font-bold">
+                <font-awesome-icon :icon="faThermometer2" />
+                Außentemperatur:</label>
+              <span class="pl-1">{{ outsideTemperature.toFixed(1) }}°C</span>
 
-            <TemperatureSlider v-model="outsideTemperature" :min="-13" :max="25" :optimal="20" />
-            <p>Heizungsvorlauftemperatur: <span class="font-bold"> {{ flowTemperature }}°C</span></p>
+              <TemperatureSlider v-model="outsideTemperature" :min="-13" :max="25" :optimal="20" />
+            </div>
+            <div>
+            <p >
+              <img :src="heater" class="w-4 h-4 inline" />
+              
+              <span class="font-bold pl-1" >Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature }}°C</span></p>
+            </div>
           </div>
           <div class="grow flex flex-col justify-end">
               <label class="mb-2">Simulationsgeschwindigkeit:</label>
