@@ -1,17 +1,19 @@
 <script lang="ts" setup>
-  import { ref, defineProps, watch } from 'vue';
+  import { ref, watch } from 'vue';
   
-  const props = defineProps<{
+const props = withDefaults(defineProps<{
 	modelValue: number;
-	min?: number;
-	max?: number;
+	min: number;
+	max: number;
 	step?: number;
 	[key: string]: any;
-  }>();
+}>(), {
+	step: 1
+});
   
   const emit = defineEmits(['update:modelValue']);
   
-  const value = ref(props.modelValue);
+  const value = ref(parseFloat(props.modelValue as any));
   
   watch(value, (newValue) => {
 	emit('update:modelValue',parseFloat(newValue as any));
@@ -19,12 +21,14 @@
   
   const decrease = () => {
 	if (props.min !== undefined && value.value <= props.min) return;
-	value.value -= props.step || 1;
+
+
+	value.value = parseFloat(value.value as any) - props.step;
   };
   
   const increase = () => {
 	if (props.max !== undefined && value.value >= props.max) return;
-	value.value += props.step || 1;
+	value.value = parseFloat(value.value as any) + props.step;
   };
   
   const inputAttrs = {
