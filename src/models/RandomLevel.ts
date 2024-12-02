@@ -20,7 +20,7 @@ function getThermalPropertiesByAge(yearBuilt: number): { uValues: ThermalPropert
 
 	const usableCapacity = 50;
 
-	const wallThickness = 0.3; // m	
+	const wallThickness = 0.3; // m
 	const ceilingAndFloorThickness = 0.2; // m
 
 	const cWall = capacityOfBrick * wallThickness * usableCapacity
@@ -36,7 +36,7 @@ function getThermalPropertiesByAge(yearBuilt: number): { uValues: ThermalPropert
 
 	//The u values are guessed by ChatGPT, they are in the right order of magnitude: https://www.bbsr-geg.bund.de/GEGPortal/DE/Praxishilfen/Wirtschaftlichkeit/Tabellen/PDF/UWerte.pdf?__blob=publicationFile&v=1
 	//The u values are in W/(m^2*K)
-	//the c values are in J/(K*m^2)	
+	//the c values are in J/(K*m^2)
 	if (yearBuilt >= 2000) {
 		return {
 			uValues: { wall: 0.20, ceiling: 0.15, floor: 0.22, interiorWall: 0.15 },
@@ -185,9 +185,7 @@ export default class RandomLevel {
 		this.house = new House();
 		this.buildRooms();
 
-		this.heatingSystem = new HeatingSystem(this.slope, this.offset);
-		this.heatingSystem.outside = this.outside;
-
+		this.heatingSystem = new HeatingSystem(this.slope, this.offset, this.outside);
 	}
 
 	get outsideTemperature() {
