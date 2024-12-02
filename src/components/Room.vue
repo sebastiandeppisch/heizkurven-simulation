@@ -3,18 +3,28 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import type { RoomInfoUI } from '@/models/Room';
 import SetTemperatureGauge from './Thermostat.vue';
+import { computed } from 'vue';
 
 
 const props = defineProps<{
 	room: RoomInfoUI;
+	proportionalSize: boolean;
 }>();
 
 const model = defineModel();
 
+const style = computed(() => {
+	return {
+		width: props.proportionalSize? props.room.width + 'px' : 'inherit',
+		height: props.proportionalSize? props.room.height + 'px' : 'inherit',
+		backgroundColor: props.room.color
+	};
+});
+
 </script>
 <template>
 	<div :class="['room', 'p-4', 'items-center', 'justify-center', 'flex']"
-		:style="{ width: room.width + 'px', height: room.height + 'px', backgroundColor: room.color }">
+		:style>
 		<div class="">
 			<!-- Raum-Icon -->
 			<div class="flex items-center justify-center mb-2">

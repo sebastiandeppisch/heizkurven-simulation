@@ -1,6 +1,6 @@
 <template>
 	<div class="floorplan-container" ref="floorplan" >
-		<div class="flex">
+		<div class="flex flex-col md:flex-row">
 			<div v-for="(room, index) in rooms.slice(0, 2)" :key="index" class="border border-black-200">
 
 				<Room :room="{
@@ -15,10 +15,11 @@
 				}"
 					v-model="room.setPoint"
 					@change="(e: any) => changeSetPoint(index, e.target.value)"
+					:proportionalSize="proportionalSize"
 				/>
 			</div>
 		</div>
-		<div class="flex">
+		<div class="flex flex-col  md:flex-row">
 			<div v-for="(room, index) in rooms.slice(2, 4)" :key="index" class="border border-black-200">
 
 				<Room :room="{
@@ -33,6 +34,7 @@
 				}"
 					v-model="room.setPoint"
 					@change="(e: any) => changeSetPoint(index+2, e.target.value)"
+					:proportionalSize="proportionalSize"
 				/>
 			</div>
 		</div>
@@ -43,17 +45,22 @@ import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCouch, faBed, faUtensils, faBath, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import type { RoomInfo, RoomInfoUI, RoomType } from '@/models/Room';
-import { useOnResize } from '@/composables';
+import { useIsWindowsSizeGreaterThan, useOnResize, useWindowWidth } from '@/composables';
 import Room from './Room.vue';
 import RoomDimensions from '@/models/RoomDimensions';
 const floorplan = ref<HTMLElement | null>(null);
 
 const rooms = ref<RoomInfoUI[]>([]);
 
+const viewPortSiz = ref(0);
+
+const proportionalSize = useIsWindowsSizeGreaterThan('md')
+
 useOnResize(() => {
 	if(!floorplan.value) return;
 	const width = floorplan.value.clientWidth;
 	rooms.value = generateRooms(width, width);
+	viewPortSiz.value = width;
 });
 
 const props = defineProps<{
@@ -132,6 +139,6 @@ const getRoomDeviationColor = (room: RoomInfo) => {
 </script>
 <style scoped>
 .floorplan-container{
-	min-width: 500px;
+	/*min-width: 500px;*/
 }
 </style>

@@ -38,7 +38,7 @@
 <template>
 	<div class="flex items-center space-x-2">
 		<button @click="decrease" class="border border-gray-500 w-8 h-8 rounded font-bold">-</button>
-		<input type="range" v-bind="inputAttrs" v-model="value" class="flex-1" />
+		<input type="range" v-bind="inputAttrs" v-model="value"/>
 		<button @click="increase" class="border border-gray-500 w-8 h-8 rounded font-bold">+</button>
 	</div>
 </template>
@@ -54,6 +54,7 @@ input[type="range"] {
 	background: #d1d5db;
 	border-radius: 0.25rem;
 	outline: none;
+	font-size: 0rem;
 }
 
 input[type="range"]::-webkit-slider-thumb {

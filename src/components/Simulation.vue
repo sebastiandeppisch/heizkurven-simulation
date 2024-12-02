@@ -106,12 +106,12 @@ const curves = computed(() => {
 
     <div class="card">
       <h2>Einstellung der Heizkurve</h2>
-      <div class="flex gap-1">
-        <div class="w-1/3 gap-5 flex flex-col">
+      <div class="flex gap-1 flex-col md:flex-row">
+        <div class="md:w-1/3 gap-5 flex flex-col">
           <div>
             <label for="offset" class="mb-2 font-bold">
               <img :src="offsetImage" alt="Offset" class="w-6 h-6 mb-1 inline" />
-              Niveau: </label> <span > {{ offset.toFixed(0) }}</span>
+              Niveau: </label> <span class="pl-1"> {{ offset.toFixed(0) }}</span>
             <Slider v-model="offset" :min="-13" :max="40" />
 
           
@@ -120,7 +120,7 @@ const curves = computed(() => {
           <div>
             <label for="slope" class="mb-2 font-bold">
               <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
-              Neigung: </label><span class="">{{ slope.toFixed(1) }}</span>
+              Neigung: </label><span class="pl-1">{{ slope.toFixed(1) }}</span>
 
             <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
             
@@ -142,7 +142,7 @@ const curves = computed(() => {
             </div>
 
         </div>
-        <div class="w-2/3">
+        <div class="md:w-2/3">
           <Curves :curves="curves" :currentTemperature="outsideTemperature" />
         </div>
       </div>
@@ -150,8 +150,8 @@ const curves = computed(() => {
 
     <div class="card">
       <h2>Gebäudesimulation</h2>
-      <div class="flex gap-3">
-        <div class="w-1/3 flex flex-col">
+      <div class="flex gap-3 md:flex-row flex-col" >
+        <div class="md:w-1/3 flex flex-col ">
           <div class="flex gap-5 flex-col">
             <div>
               <label for="temperature" class="mb-2 font-bold">
@@ -174,7 +174,7 @@ const curves = computed(() => {
           </div>
         </div>
 
-        <div class="w-2/3">
+        <div class="md:w-2/3">
           <FloorPlan :rooms="roomInfos" :dimensions="dimensions" @changeSetPoint="changeSetPoint" />
 
         </div>
