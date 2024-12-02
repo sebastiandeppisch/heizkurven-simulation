@@ -12,7 +12,6 @@ const steps: Array<ITourStep> = [
 		target: '[data-tour="curve"]',
 		content: 'Deine Aufgabe ist es, hier die optimale Heizkurve zu finden. Es ist eine zufällige Heizkurve eingestellt, und es wird simuliert, wie ein zufälliges Haus auf diese Heizkurve reagiert.',
 		highlight: true,
-		backdrop: true,
 		noScroll: true,
 
 	},
