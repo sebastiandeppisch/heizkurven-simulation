@@ -78,7 +78,7 @@ const runSimulation = () => {
 
 };
 
-const interval = ref<any|null>(null);
+const interval = ref<any | null>(null);
 
 onMounted(() => {
   interval.value = setInterval(() => {
@@ -113,34 +113,26 @@ const curves = computed(() => {
               <img :src="offsetImage" alt="Offset" class="w-6 h-6 mb-1 inline" />
               Niveau: </label> <span class="pl-1"> {{ offset.toFixed(0) }}</span>
             <Slider v-model="offset" :min="-13" :max="40" />
-
-          
           </div>
-
           <div>
             <label for="slope" class="mb-2 font-bold">
               <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
               Neigung: </label><span class="pl-1">{{ slope.toFixed(1) }}</span>
-
             <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
-            
-
           </div>
-
           <div>
-                <div class="font-bold">
-                  <font-awesome-icon :icon="faArrowDown" />
-                  Niedrige Neigung:
-                </div>
-                Fußbodenheizung, gut gedämmte Häuser
-                <div class="font-bold">
-                  <font-awesome-icon :icon="faArrowUp" />
-                  Hohe Neigung:
-                </div>
-                Radiatoren, schlecht gedämmte Häuser
-              <div class="text-gray-700">  (Tendenz, kann abweichen)</div>
+            <div class="font-bold">
+              <font-awesome-icon :icon="faArrowDown" />
+              Niedrige Neigung:
             </div>
-
+            Fußbodenheizung, gut gedämmte Häuser
+            <div class="font-bold">
+              <font-awesome-icon :icon="faArrowUp" />
+              Hohe Neigung:
+            </div>
+            Radiatoren, schlecht gedämmte Häuser
+            <div class="text-gray-700"> (Tendenz, kann abweichen)</div>
+          </div>
         </div>
         <div class="md:w-2/3">
           <Curves :curves="curves" :currentTemperature="outsideTemperature" />
@@ -150,7 +142,7 @@ const curves = computed(() => {
 
     <div class="card">
       <h2>Gebäudesimulation</h2>
-      <div class="flex gap-3 md:flex-row flex-col" >
+      <div class="flex gap-3 md:flex-row flex-col">
         <div class="md:w-1/3 flex flex-col ">
           <div class="flex gap-5 flex-col">
             <div>
@@ -158,35 +150,27 @@ const curves = computed(() => {
                 <font-awesome-icon :icon="faThermometer2" />
                 Außentemperatur:</label>
               <span class="pl-1">{{ outsideTemperature.toFixed(1) }}°C</span>
-
               <TemperatureSlider v-model="outsideTemperature" :min="-13" :max="25" :optimal="20" />
             </div>
             <div>
-            <p >
-              <img :src="heater" class="w-4 h-4 inline" />
-              
-              <span class="font-bold pl-1" >Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature }}°C</span></p>
+              <p>
+                <img :src="heater" class="w-4 h-4 inline" />
+
+                <span class="font-bold pl-1">Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature
+                  }}°C</span>
+              </p>
             </div>
           </div>
           <div class="grow flex flex-col justify-end">
-              <label class="mb-2">Simulationsgeschwindigkeit:</label>
-              <Slider v-model="simulationSpeed" :min="1" :max="10" />
+            <label class="mb-2">Simulationsgeschwindigkeit:</label>
+            <Slider v-model="simulationSpeed" :min="1" :max="10" />
           </div>
         </div>
-
         <div class="md:w-2/3">
           <FloorPlan :rooms="roomInfos" :dimensions="dimensions" @changeSetPoint="changeSetPoint" />
-
         </div>
       </div>
     </div>
-
-
-
-
-
-
-
   </div>
 </template>
 
