@@ -27,8 +27,8 @@ function getCurveData(offset: number, slope: number) {
 
 	const curve = new HeatingCurve(offset, slope);
 
-	for (let tempOutside = 20; tempOutside >= -15; tempOutside -= 5) {
-		data.push([tempOutside,curve.get(tempOutside)]);
+	for (let tempOutside = -15; tempOutside <= 20; tempOutside += 5) {
+		data.push([tempOutside, curve.get(tempOutside)]);
 	}
 	return {
 		offset: offset,
