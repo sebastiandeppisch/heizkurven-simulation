@@ -37,7 +37,7 @@ const style = computed(() => {
 			<div class="flex">
 				<div>
 					<!-- Soll-Temperatur Input -->
-					<div class="text-center mb-2">
+					<div class="text-center mb-2" data-tour="set-temperature">
 						<label class="text-sm text-gray-800 block">Soll (°C):</label>
 						<input v-model="model" type="number"
 							class="w-16 text-center rounded-md border border-gray-300" min="12" max="28" step="0.5" />
@@ -46,7 +46,7 @@ const style = computed(() => {
 					<div class="text-center">
 						<p class="text-sm">Ist: {{ room.currentTemperature.toFixed(1) }}°C</p>
 					</div>
-					<div class="text-center">
+					<div class="text-center" data-tour="valve-position">
 						<p class="text-sm">Ventilstellung: {{ room.heatingPowerFactor.toFixed(0) }}%</p>
 					</div>
 				</div>

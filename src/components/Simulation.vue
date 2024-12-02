@@ -114,7 +114,7 @@ const curves = computed(() => {
           <Slider v-model="offset" :min="-13" :max="40" />
         </div>
 
-        <div>
+        <div data-tour="curve-parameter">
           <label for="slope" class="mb-2 font-bold">
             <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
             Neigung: </label><span class="pl-1">{{ slope.toFixed(1) }}</span>
@@ -137,13 +137,13 @@ const curves = computed(() => {
       </template>
 
       <template #outputs>
-        <Curves :curves="curves" :currentTemperature="outsideTemperature" />
+        <Curves :curves="curves" :currentTemperature="outsideTemperature" data-tour="curve" />
       </template>
     </Card>
 
     <Card title="Gebäudesimulation">
       <template #inputs>
-        <div>
+        <div data-tour="outside-temperature">
           <label for="temperature" class="mb-2 font-bold">
             <font-awesome-icon :icon="faThermometer2" />
             Außentemperatur:</label>
@@ -151,21 +151,21 @@ const curves = computed(() => {
 
           <TemperatureSlider v-model="outsideTemperature" :min="-13" :max="25" :optimal="20" />
         </div>
-        <div>
+        <div data-tour="work-point">
           <p>
             <img :src="heater" class="w-4 h-4 inline" />
 
             <span class="font-bold pl-1">Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature }}°C</span>
           </p>
         </div>
-        <div class="grow flex flex-col justify-end">
+        <div class="grow flex flex-col justify-end" >
           <label class="mb-2">Simulationsgeschwindigkeit:</label>
-          <Slider v-model="simulationSpeed" :min="1" :max="10" />
+          <Slider v-model="simulationSpeed" :min="1" :max="10" data-tour="simulation-speed"/>
         </div>
       </template>
 
       <template #outputs>
-        <FloorPlan :rooms="roomInfos" :dimensions="dimensions" @changeSetPoint="changeSetPoint" />
+        <FloorPlan :rooms="roomInfos" :dimensions="dimensions" @changeSetPoint="changeSetPoint" data-tour="rooms" />
       </template>
     </Card>
   </div>

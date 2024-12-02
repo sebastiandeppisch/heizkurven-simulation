@@ -16,6 +16,7 @@
 					v-model="room.setPoint"
 					@change="(e: any) => changeSetPoint(index, e.target.value)"
 					:proportionalSize="proportionalSize"
+					data-tour="room"
 				/>
 			</div>
 		</div>
