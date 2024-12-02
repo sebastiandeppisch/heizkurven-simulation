@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import Highcharts, { animate } from 'highcharts';
+import * as Highcharts from 'highcharts';
 import HeatingCurve from '@/models/HeatingCurve';
 
 interface Curve {
@@ -39,7 +39,7 @@ function getCurveData(offset: number, slope: number) {
 
 const plotCurves = () => {
 	if (chartContainer.value) {
-		const series = [
+		const series: any[] = [
 			...props.curves.map(curve => ({
 				name: curve.name,
 				data: getCurveData(curve.offset, curve.slope).data,
@@ -74,6 +74,12 @@ const plotCurves = () => {
 
 
 		Highcharts.chart(chartContainer.value, {
+			/*colors: [ //triadic color scheme
+				'#DB4332', '#BBDB32', '#1f2937'
+			],*/
+			/*colors: [ //quad color scheme
+				'#DBA132','#45DB32', '#1f2937'
+			],*/
 			chart: {
 				type: 'line'
 			}, 
