@@ -80,6 +80,9 @@ const plotCurves = () => {
 			/*colors: [ //quad color scheme
 				'#DBA132','#45DB32', '#1f2937'
 			],*/
+			accessibility: {
+				enabled: false
+			},
 			chart: {
 				type: 'line'
 			}, 
@@ -109,7 +112,7 @@ const plotCurves = () => {
 				min: 20,
 				max: 100
 			},
-			series
+			series,
 		});
 	}
 };
