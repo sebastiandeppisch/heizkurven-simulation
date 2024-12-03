@@ -19,6 +19,7 @@ const steps: Array<ITourStep> = [
 		target: '[data-tour="curve-parameter"]',
 		content: 'Hier kannst Du das Niveau und Neigung der Kurve verstellen.',
 		placement: 'bottom',
+		highlight: true,
 	},
 	{
 		target: '[data-tour="outside-temperature"]',

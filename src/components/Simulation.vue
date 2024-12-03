@@ -107,19 +107,21 @@ const curves = computed(() => {
 
     <Card title="Einstellung der Heizkurve">
       <template #inputs>
-        <div>
-          <label for="offset" class="mb-2 font-bold">
-            <img :src="offsetImage" alt="Offset" class="w-6 h-6 mb-1 inline" />
-            Niveau: </label> <span class="pl-1"> {{ offset.toFixed(0) }}</span>
-          <Slider v-model="offset" :min="-13" :max="40" />
-        </div>
+        <div class="gap-5 flex flex-col" data-tour="curve-parameter">
+          <div>
+            <label for="offset" class="mb-2 font-bold">
+              <img :src="offsetImage" alt="Offset" class="w-6 h-6 mb-1 inline" />
+              Niveau: </label> <span class="pl-1"> {{ offset.toFixed(0) }}</span>
+            <Slider v-model="offset" :min="-13" :max="40" />
+          </div>
 
-        <div data-tour="curve-parameter">
-          <label for="slope" class="mb-2 font-bold">
-            <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
-            Neigung: </label><span class="pl-1">{{ slope.toFixed(1) }}</span>
+          <div>
+            <label for="slope" class="mb-2 font-bold">
+              <img :src="slopeImage" alt="Slope" class="w-6 h-6 mb-1 inline" />
+              Neigung: </label><span class="pl-1">{{ slope.toFixed(1) }}</span>
 
-          <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
+            <Slider v-model="slope" :min="0.2" :max="3.5" :step="0.1" />
+          </div>
         </div>
         <div>
           <div class="font-bold">
@@ -158,9 +160,9 @@ const curves = computed(() => {
             <span class="font-bold pl-1">Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature }}°C</span>
           </p>
         </div>
-        <div class="grow flex flex-col justify-end" >
+        <div class="grow flex flex-col justify-end">
           <label class="mb-2">Simulationsgeschwindigkeit:</label>
-          <Slider v-model="simulationSpeed" :min="1" :max="10" data-tour="simulation-speed"/>
+          <Slider v-model="simulationSpeed" :min="1" :max="10" data-tour="simulation-speed" />
         </div>
       </template>
 
