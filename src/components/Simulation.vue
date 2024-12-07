@@ -34,6 +34,8 @@ const offset = ref(orgOffset);
 
 const roomSetPoints = ref(level.rooms.map(room => room.getInfo().setPoint));
 
+const buildingAge = level.buildingAge;
+
 
 const maxOutsideTemperature = computed(() => {
   return Math.ceil(Math.max(...roomSetPoints.value));
@@ -160,9 +162,18 @@ const curves = computed(() => {
             <span class="font-bold pl-1">Vorlauftemperatur:</span> <span class="pl-1"> {{ flowTemperature }}°C</span>
           </p>
         </div>
-        <div class="grow flex flex-col justify-end">
-          <label class="mb-2">Simulationsgeschwindigkeit:</label>
-          <Slider v-model="simulationSpeed" :min="1" :max="10" data-tour="simulation-speed" />
+        <div class="grow flex flex-col justify-end gap-5">
+
+          <div>
+            <label class="mb-2">Baujahr:</label> <span>{{ buildingAge }}</span>
+            <div class="text-gray-700">Das Haus ist dem Baujahr entsprechend gedämmt</div>
+          </div>
+          <div> 
+            <label class="mb-2">Simulationsgeschwindigkeit:</label>
+            <Slider v-model="simulationSpeed" :min="1" :max="10" data-tour="simulation-speed" />
+          </div>
+
+        
         </div>
       </template>
 

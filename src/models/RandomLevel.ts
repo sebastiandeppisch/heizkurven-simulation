@@ -73,14 +73,26 @@ class ThermalRoomGenerator {
 		'livingroom': 22
 	};
 
-	constructor(private cValues: ThermalProperties, private uValues: ThermalProperties, private dimensions: RoomDimensions, private outside: Outside, private types: RoomType[]) {
+	constructor(private cValues: ThermalProperties, private uValues: ThermalProperties, private dimensions: RoomDimensions, private outside: Outside, private types: RoomType[], private buildingAge: number) {
 		this.generateRooms();
 	}
 
 	private generateHeatingCoefficient(thermalResistance: number, setPoint: number) {
+		//the planing temperature need to be a little bit higher in the simulation to make use of other heat sources (persons)
+
+		//new houses use mostly floor heating
+		let heaterTemperature = 50;
+
+		if (this.buildingAge === 1960) {
+			//old houses use mostly radiators
+			heaterTemperature += 10;
+		} else if (this.buildingAge === 1980) {
+			heaterTemperature += 5;
+		}
+
+		heaterTemperature = randomNormal(heaterTemperature, 10);
 
 		const outsideTemperature = -10;
-		const heaterTemperature = 55;
 		const deltaToOutside = setPoint - outsideTemperature;
 		const deltaToHeater = heaterTemperature - setPoint;
 
@@ -170,6 +182,8 @@ export default class RandomLevel {
 
 	public house: House;
 
+	public buildingAge: number;
+
 	public constructor() {
 		this.dimensions = [this.randomDimension(), this.randomDimension(), this.randomDimension()];
 
@@ -182,6 +196,9 @@ export default class RandomLevel {
 		this.offset = Math.round(this.offset);
 
 		this.outside = new Outside((new OutsideTemperatureGenerator()).forMonth(this.month));
+
+		const ages = [1980, 2000, 1960];
+		this.buildingAge = ages[Math.floor(Math.random() * ages.length)];;
 
 		this.house = new House();
 		this.buildRooms();
@@ -201,15 +218,12 @@ export default class RandomLevel {
 		const roomTypes = ['kitchen', 'bedroom', 'bathroom', 'livingroom'] as RoomType[];
 		const roomOrder = roomTypes.sort(() => Math.random() - 0.5);
 
-		const ages = [1980, 2000, 1960];
-		let age = ages[Math.floor(Math.random() * ages.length)];
-		console.log("Age: " + age);
-		age = 2000; //TODO finetune, use random age
-		const thermalProperties = getThermalPropertiesByAge(age);
+
+		const thermalProperties = getThermalPropertiesByAge(this.buildingAge);
 		console.log(thermalProperties);
 		const roomDimensions = new RoomDimensions(10, 10, this.dimensions);
 
-		const generator = new ThermalRoomGenerator(thermalProperties.cValues, thermalProperties.uValues, roomDimensions, this.outside, roomOrder);
+		const generator = new ThermalRoomGenerator(thermalProperties.cValues, thermalProperties.uValues, roomDimensions, this.outside, roomOrder, this.buildingAge);
 		this.rooms = generator.rooms;
 		console.log(this.rooms);
 		this.rooms.forEach(room => this.house.addRoom(room));
