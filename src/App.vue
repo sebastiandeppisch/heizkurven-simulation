@@ -14,8 +14,9 @@ function startTour () {
   tour.value.startTour();
 }
 
+
 function restart () {
-  window.location.reload();
+  key.value++;
 }
 
 </script>
@@ -37,7 +38,7 @@ function restart () {
 
         </div>
         
-        <Simulation data-tour="test"/>
+        <Simulation data-tour="test" :key="key"/>
 
       </div>
     </main>
