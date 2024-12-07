@@ -26,7 +26,7 @@ function getThermalPropertiesByAge(yearBuilt: number): { uValues: ThermalPropert
 	const cWall = capacityOfBrick * wallThickness * usableCapacity
 	const cCeilingAndFloor = capacityOfBrick * ceilingAndFloorThickness * usableCapacity
 
-	//as this is not expected to be a quantitive correct model, just assume the cValues are the same for all years
+	//as this is not expected to be a quantitive correct model, just assume the cValues are the same for all years of building
 	const cValues = {
 		wall: cWall,
 		ceiling: cCeilingAndFloor,
@@ -79,13 +79,13 @@ class ThermalRoomGenerator {
 
 	private generateHeatingCoefficient(thermalResistance: number, setPoint: number) {
 
-		const outsideTemperature = -20;
-		const heaterTemperature = 60;
+		const outsideTemperature = -10;
+		const heaterTemperature = 55;
 		const deltaToOutside = setPoint - outsideTemperature;
 		const deltaToHeater = heaterTemperature - setPoint;
 
 		const coefficient = deltaToOutside * thermalResistance / deltaToHeater;
-		return coefficient * 2;
+		return coefficient;
 	}
 
 	private generateRooms() {
@@ -98,7 +98,7 @@ class ThermalRoomGenerator {
 			let cValue = this.cValue(index);
 			const uValueOutside = this.thermalResistanceOutside(index);
 
-			const heatingCoefficient = this.generateHeatingCoefficient(uValueOutside, temperature) * 2;
+			const heatingCoefficient = this.generateHeatingCoefficient(uValueOutside, temperature);
 
 			console.log("heat: " + heatingCoefficient, "cValue: " + cValue, "uValue: " + uValueOutside);
 
@@ -134,7 +134,8 @@ class ThermalRoomGenerator {
 
 	private uValueInside(a: number, b: number): number {
 		const wallLength = this.dimensions.getSharingWith(a, b);
-		return wallLength * this.uValues.interiorWall * 2.5;
+		const wallHeight = 2.5;
+		return wallLength * this.uValues.interiorWall * wallHeight;
 	}
 
 	private cValue(index: number): number {
