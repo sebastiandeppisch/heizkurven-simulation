@@ -68,6 +68,8 @@ export default class Room implements ThermalEntity {
     const heatingPowerFactor = this.kp * error + this.ki * this.i;
     this.i += error;
 
+    this.i = Math.max(-1 / this.ki, Math.min(1 / this.ki, this.i));
+
     let limitedHeatingPowerFactor = Math.max(0, Math.min(1, heatingPowerFactor));
 
     if (error > 2) {
