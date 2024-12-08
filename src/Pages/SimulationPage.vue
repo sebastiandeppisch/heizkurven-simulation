@@ -27,7 +27,11 @@ function restart() {
 		<VTour ref="tour" :steps="tourSteps" autostart
 			:buttonLabels='{ next: "Weiter", back: "Zurück", done: "Beenden", skip: "Überspringen" }' />
 		<div class="flex flex-row justify-end mb-4 gap-4 items-center">
-			<p class="text-sm text-gray-600 mr-auto">Letzte Änderung: {{ formattedBuildDate }}</p>
+			<p class="">Letzte Änderung: {{ formattedBuildDate }}
+				
+			</p>
+			<a href="#changelog" class="underline">Changelog</a>
+			<a href="#methodik" class="underline mr-auto">Methodik</a>
 			<button @click="restart" class="border border-gray-500 rounded font-bold bg-white p-2"
 				date-tour="new-house"><font-awesome-icon :icon="faHouse" class="pr-2" />Neues Haus erstellen</button>
 			<button @click="startTour" class="border border-gray-500 rounded font-bold bg-white p-2"><font-awesome-icon

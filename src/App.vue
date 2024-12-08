@@ -7,7 +7,7 @@ import Router from './components/Router.vue';
       <h1 class="text-3xl font-bold text-center">Heizungssteuerung Simulation</h1>
     </header>
 
-    <main class="flex-1 flex items-center justify-center">
+    <main class="flex-1 flex justify-center">
       <div class="w-full max-w-5xl p-6">
         <Router />
       </div>
