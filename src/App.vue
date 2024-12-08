@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import SimulationPage from './Pages/SimulationPage.vue';
+import Router from './components/Router.vue';
 </script>
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col">
@@ -9,7 +9,7 @@ import SimulationPage from './Pages/SimulationPage.vue';
 
     <main class="flex-1 flex items-center justify-center">
       <div class="w-full max-w-5xl p-6">
-        <SimulationPage />
+        <Router />
       </div>
     </main>
 
