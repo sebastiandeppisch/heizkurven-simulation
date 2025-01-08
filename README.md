@@ -1,45 +1,56 @@
-# heating-simulation
+# Heizkurven-Simulation
 
-This template should help get you started developing with Vue 3 in Vite.
+Eine interaktive Webanwendung zur Simulation und Visualisierung von Heizkurven. Experimentiere an einem zufällig generierten Haus und lerne, wie Du eine Heizkurve optimal einstellst. Mit der geführten Tour und direkter Visualisierung siehst Du sofort, wie sich Deine Einstellungen auswirken - ganz ohne in der Realität frieren zu müssen. Was Du hier lernst, kannst Du direkt auf Deine eigene Heizungsanlage übertragen.
 
-## Recommended IDE Setup
+Perfekt für Dich, wenn Du:
+- Hausbesitzer:in bist und Deine Heizung optimieren möchtest
+- Verstehen willst, wie eine Heizkurvenregelung funktioniert
+- Die Zusammenhänge zwischen Außentemperatur, Vorlauftemperatur und Raumtemperatur kennenlernen möchtest
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Live Demo
 
-## Type Support for `.vue` Imports in TS
+Probier's direkt aus unter: [httsp://heizkurve.sebastiandeppisch.de](https://heizkurve.sebastiandeppisch.de)
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Infos zum Code
 
-## Customize configuration
+Diese Anwendung wurde mit Vue 3, TypeScript und Vite entwickelt. Zum Installieren auf Deinem PC benötigst Du:
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Node.js (aktuelle LTS Version)
+- npm (wird mit Node.js installiert)
 
-## Project Setup
+### Setup
 
+1. Repository klonen
+```sh
+git clone [repository-url]
+cd heizkurven-simulation
+```
+
+2. Abhängigkeiten installieren
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
+3. Entwicklungsserver starten
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
+4. Für Production Build
 ```sh
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Weitere Dokumentation
 
-```sh
-npm run test:unit
-```
+- [Vue 3 Dokumentation](https://vuejs.org/)
+- [Vite Dokumentation](https://vitejs.dev/)
 
-### Lint with [ESLint](https://eslint.org/)
+## Lizenz
+Diese Software ist unter einer modifizierten Apache Lizenz, Version 2.0 lizenziert.
 
-```sh
-npm run lint
-```
+Wichtige Punkte:
+- Kommerzielle Nutzung ist ausschließlich auf der offiziellen Instanz unter heizkurve.sebastiandeppisch.de erlaubt
+- Alle anderen Installationen dürfen nur nicht-kommerziell genutzt werden
+- Die Benutzeroberfläche muss einen Verweis auf den ursprünglichen Autor enthalten
+- Die vollständigen Lizenzbedingungen findest du in der [License](LICENSE) Datei

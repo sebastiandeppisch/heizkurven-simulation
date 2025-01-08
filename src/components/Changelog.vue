@@ -4,6 +4,11 @@ import InfoPage from './InfoPage.vue';
 <template>
 	<InfoPage>
 		<h2 class="font-semibold text-2xl">Changelog</h2>
+		<h3>09.01.2025
+			<ul class="list-disc pl-6">
+				<li>Der Code ist jetzt auf GitHub verfügbar</li>
+			</ul>
+		</h3>
 		<h3>08.12.2024</h3>
 		<ul class="list-disc pl-6">
 			<li>Realistischere Heizkörper-Auslegung bzw. Vorlauftemperatur</li>

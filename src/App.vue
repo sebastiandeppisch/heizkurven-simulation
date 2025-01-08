@@ -14,7 +14,17 @@ import Router from './components/Router.vue';
     </main>
 
     <footer class="bg-gray-800 text-white p-4 mt-6">
-      <p class="text-center text-sm">© Sebastian Deppisch 2024 &ndash; <a href="https://sebastiandeppisch.de/impressum">Impressum</a> &ndash; <a href="https://Sebastiandeppisch.de/datenschutz">Datenschutzerklärung</a> </p>
+      <p class="text-center text-sm">
+        © Sebastian Deppisch 2024
+        &ndash;
+        <a href="https://sebastiandeppisch.de/impressum">Impressum</a>
+        &ndash;
+        <a href="https://Sebastiandeppisch.de/datenschutz">Datenschutzerklärung</a>
+        &ndash;
+        <a href="https://github.com/sebastiandeppisch/heizkurven-simulation">
+          Github
+        </a>
+      </p>
     </footer>
   </div>
 </template>
