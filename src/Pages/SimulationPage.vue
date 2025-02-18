@@ -17,9 +17,27 @@ const softwareBuildDate = BUILD_DATE;
 const formattedBuildDate = new Date(softwareBuildDate).toLocaleDateString('de-DE');
 const key = ref(0);
 
+function storeSeed(seed: number) {
+	localStorage.setItem('house-seed', seed.toString());
+}
+
+function retrieveSeed(): number | null {
+	const seed = localStorage.getItem('house-seed');
+	return seed ? parseInt(seed) : null;
+}
 
 function restart() {
+	const newSeed = RandomLevel.generateNewSeed();
+	storeSeed(newSeed);
 	key.value++;
+}
+
+const initialSeed = retrieveSeed();
+if (initialSeed !== null) {
+	storeSeed(initialSeed);
+} else {
+	const newSeed = RandomLevel.generateNewSeed();
+	storeSeed(newSeed);
 }
 </script>
 <template>

@@ -6,6 +6,7 @@ import Room from "./Room";
 import type { RoomType } from "./Room";
 import RoomDimensions from "./RoomDimensions";
 import { Outside, ThermalConnection } from "./ThermalConnection";
+import SeededRandom from "./SeededRandom";
 
 interface ThermalProperties {
 	wall: number;
@@ -55,9 +56,9 @@ function getThermalPropertiesByAge(yearBuilt: number): { uValues: ThermalPropert
 	}
 }
 
-function randomNormal(mean: number, stdDev: number) {
-	let u1 = Math.random();
-	let u2 = Math.random();
+function randomNormal(mean: number, stdDev: number, rng: () => number) {
+	let u1 = rng();
+	let u2 = rng();
 	let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
 	return mean + z0 * stdDev;
 };
@@ -73,7 +74,7 @@ class ThermalRoomGenerator {
 		'livingroom': 22
 	};
 
-	constructor(private cValues: ThermalProperties, private uValues: ThermalProperties, private dimensions: RoomDimensions, private outside: Outside, private types: RoomType[], private buildingAge: number) {
+	constructor(private cValues: ThermalProperties, private uValues: ThermalProperties, private dimensions: RoomDimensions, private outside: Outside, private types: RoomType[], private buildingAge: number, private rng: () => number) {
 		this.generateRooms();
 	}
 
@@ -90,7 +91,7 @@ class ThermalRoomGenerator {
 			heaterTemperature += 5;
 		}
 
-		heaterTemperature = randomNormal(heaterTemperature, 10);
+		heaterTemperature = randomNormal(heaterTemperature, 10, this.rng);
 
 		const outsideTemperature = -10;
 		const deltaToOutside = setPoint - outsideTemperature;
@@ -103,7 +104,7 @@ class ThermalRoomGenerator {
 	private generateRooms() {
 		this.rooms = this.types.map((type, index) => {
 
-			let temperature = randomNormal(this.roomTemperatures[type], 1);
+			let temperature = randomNormal(this.roomTemperatures[type], 1, this.rng);
 
 			temperature = Math.round(temperature * 10) / 10;
 
@@ -184,13 +185,16 @@ export default class RandomLevel {
 
 	public buildingAge: number;
 
-	public constructor() {
+	private rng: SeededRandom;
+
+	public constructor(seed: number) {
+		this.rng = new SeededRandom(seed);
 		this.dimensions = [this.randomDimension(), this.randomDimension(), this.randomDimension()];
 
-		this.month = Math.floor(Math.random() * 12);
+		this.month = Math.floor(this.rng.next() * 12);
 
-		this.slope = Math.min(Math.max(randomNormal(1, 0.5), 0.2), 3.5);
-		this.offset = Math.min(Math.max(randomNormal(0, 5), -5), 5);
+		this.slope = Math.min(Math.max(randomNormal(1, 0.5, this.rng.next), 0.2), 3.5);
+		this.offset = Math.min(Math.max(randomNormal(0, 5, this.rng.next), -5), 5);
 
 		this.slope = Math.round(this.slope * 10) / 10;
 		this.offset = Math.round(this.offset);
@@ -198,7 +202,7 @@ export default class RandomLevel {
 		this.outside = new Outside((new OutsideTemperatureGenerator()).forMonth(this.month));
 
 		const ages = [1980, 2000, 1960];
-		this.buildingAge = ages[Math.floor(Math.random() * ages.length)];;
+		this.buildingAge = ages[Math.floor(this.rng.next() * ages.length)];;
 
 		this.house = new House();
 		this.buildRooms();
@@ -211,22 +215,26 @@ export default class RandomLevel {
 	}
 
 	private randomDimension(): number {
-		return Math.min(Math.max(randomNormal(1 / 2, 1 / 8), 1 / 3), 2 / 3);
+		return Math.min(Math.max(randomNormal(1 / 2, 1 / 8, this.rng.next), 1 / 3), 2 / 3);
 	}
 
 	private buildRooms() {
 		const roomTypes = ['kitchen', 'bedroom', 'bathroom', 'livingroom'] as RoomType[];
-		const roomOrder = roomTypes.sort(() => Math.random() - 0.5);
+		const roomOrder = roomTypes.sort(() => this.rng.next() - 0.5);
 
 
 		const thermalProperties = getThermalPropertiesByAge(this.buildingAge);
 		console.log(thermalProperties);
 		const roomDimensions = new RoomDimensions(10, 10, this.dimensions);
 
-		const generator = new ThermalRoomGenerator(thermalProperties.cValues, thermalProperties.uValues, roomDimensions, this.outside, roomOrder, this.buildingAge);
+		const generator = new ThermalRoomGenerator(thermalProperties.cValues, thermalProperties.uValues, roomDimensions, this.outside, roomOrder, this.buildingAge, this.rng.next);
 		this.rooms = generator.rooms;
 		console.log(this.rooms);
 		this.rooms.forEach(room => this.house.addRoom(room));
+	}
+
+	public static generateNewSeed(): number {
+		return Math.floor(Math.random() * 1000000);
 	}
 
 	public getSimulation() {
